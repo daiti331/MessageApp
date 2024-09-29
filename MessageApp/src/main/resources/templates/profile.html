@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザープロフィール</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<!-- ナビゲーションバーをインクルード -->
+	<div th:replace="navbar.html"></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>プロフィール</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <img src="https://via.placeholder.com/150" alt="プロフィール写真" class="rounded-circle" style="width: 150px; height: 150px;">
+                        </div>
+                        <div class="text-center mb-4">
+                            <h3>山田 太郎</h3>
+                            <p class="text-muted">taro.yamada@example.com</p>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <h5>年齢</h5>
+                            </div>
+                            <div class="col-sm-8">
+                                <p>30歳</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <h5>職業</h5>
+                            </div>
+                            <div class="col-sm-8">
+                                <p>エンジニア</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <h5>自己紹介</h5>
+                            </div>
+                            <div class="col-sm-8">
+                                <p>趣味はプログラミングと読書です。最新技術に興味があります。</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a th:href="@{/profile-edit}" class="btn btn-primary">プロフィールを編集</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

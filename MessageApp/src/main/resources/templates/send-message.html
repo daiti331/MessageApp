@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メッセージ送信</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>メッセージを送信</h1>
+        <form th:action="@{/message/send}" method="post">
+            <!-- 送信先のユーザー名を表示 -->
+            <div class="form-group">
+                <label for="recipient">送信先:</label>
+                <input type="text" id="recipient" class="form-control" th:value="${recipient.username}" readonly>
+            </div>
+            
+            <!-- recipientIdをhiddenフィールドで渡す -->
+            <input type="hidden" name="recipientId" th:value="${recipient.id}">
+
+            <!-- メッセージ内容 -->
+            <div class="form-group">
+                <label for="content">メッセージ内容:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">送信</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

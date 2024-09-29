@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール編集</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<!-- ナビゲーションバーをインクルード -->
+	<div th:replace="navbar.html"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">プロフィール編集</h2>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form th:action="@{/profile-update}" method="post">
+                    <div class="form-group">
+                        <label for="username">ユーザー名</label>
+                        <input type="text" class="form-control" id="username" name="username" value="山田太郎" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">メールアドレス</label>
+                        <input type="email" class="form-control" id="email" name="email" value="taro@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">自己紹介</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3">こんにちは！私は山田太郎です。</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">更新</button>
+                    <a th:href="@{/profile}" class="btn btn-secondary">キャンセル</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

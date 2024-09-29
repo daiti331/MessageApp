@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メールボックス</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<!-- ナビゲーションバーをインクルード -->
+	<div th:replace="navbar.html"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">メールボックス</h2>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#inbox">受信箱</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#sent">送信箱</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#drafts">下書き</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#trash">ゴミ箱</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+			<!-- 受信箱 -->
+			<div id="inbox" class="tab-pane fade show active">
+			    <h5>受信箱</h5>
+			    <ul>
+			        <li th:each="message : ${receivedMessages}">
+			            <span th:text="${message.sender.username}">送信者</span>
+			            <span th:text="${message.content}">メッセージ内容</span>
+<!--			            <small th:text="${#dates.format(message.timestamp, 'yyyy/MM/dd HH:mm')}">送信日時</small>-->
+						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+			        </li>
+			    </ul>
+			</div>
+
+			<!-- 送信箱 -->
+			<div id="sent" class="tab-pane fade">
+			    <h5>送信箱</h5>
+			    <ul>
+			        <li th:each="message : ${sentMessages}">
+			            <span th:text="${message.recipient.username}">受信者</span>:
+			            <span th:text="${message.content}">メッセージ内容</span>
+<!--			            <small th:text="${#dates.format(message.timestamp, 'yyyy/MM/dd HH:mm')}">送信日時</small>-->
+						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+			        </li>
+			    </ul>
+			</div>
+            <!-- 下書き -->
+            <div id="drafts" class="tab-pane fade">
+                <h5>下書き</h5>
+                <p>ここに下書きのメッセージが表示されます。</p>
+            </div>
+            <!-- ゴミ箱 -->
+            <div id="trash" class="tab-pane fade">
+                <h5>ゴミ箱</h5>
+                <p>ここに削除したメッセージが表示されます。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
