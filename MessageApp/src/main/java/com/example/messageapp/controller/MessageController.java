@@ -10,15 +10,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.messageapp.entity.Message;
+import com.example.messageapp.entity.Profile;
 import com.example.messageapp.entity.User;
 import com.example.messageapp.form.UserRegisterForm;
 import com.example.messageapp.repository.MessageRepository;
+import com.example.messageapp.repository.ProfileRepository;
 import com.example.messageapp.repository.UserRepository;
+import com.example.messageapp.servicce.ProfileService;
 import com.example.messageapp.servicce.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,8 @@ public class MessageController {
     private final UserService userService; // UserServiceインターフェースを使用
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final ProfileRepository profileRepository;
+    private final ProfileService profileService;
 
     @GetMapping("/")
     public String top() {
@@ -39,12 +45,13 @@ public class MessageController {
     // サインアップページを表示
     @GetMapping("/signup")
     public String showSignupForm(Model model) {
-        model.addAttribute("user", new User());
+//        model.addAttribute("user", new User()); たぶんいらない
+        model.addAttribute("userRegisterForm", new UserRegisterForm());
         return "signup"; // signup.htmlを返す
     }
     
     @PostMapping("/signup")
-    public String signup(@Valid UserRegisterForm userRegisterForm, BindingResult bindingResult) {
+    public String signup(@Valid @ModelAttribute("userRegisterForm") UserRegisterForm userRegisterForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "signup"; // エラーがあれば再度signupページを表示
         }
@@ -54,8 +61,16 @@ public class MessageController {
         // パスワードをハッシュ化
         user.setPassword(userRegisterForm.getPassword());
 		user.setEmail(userRegisterForm.getEmail());
-		user.setRole("viewer");
+		user.setRole("user");
+		try {
+		//ユーザーを作成
 		userService.registerUser(user);
+		} catch (Exception e) {
+			System.err.println("ユーザーの作成に失敗しました: " + e.getMessage());
+		}
+		
+	    // プロフィールを作成
+	    profileService.createProfile(user); // ユーザーを引数として渡す
         
         return "redirect:/login"; // 登録後はログインページへリダイレクト
     }
@@ -78,14 +93,62 @@ public class MessageController {
         return "user-list"; // user-list.htmlというテンプレートにリストを渡す
     }
     
-    @GetMapping("/profile")
-    public String profile() {
+//    @GetMapping("/profile")
+//    public String profile() {
+//        return "profile";
+//    }
+    
+    //まだ機能してない（多分プロフィールが一件もないから）
+    @GetMapping("/profile/{userId}")
+    public String profile(@PathVariable Long userId, Model model) {
+        Profile profile = profileRepository.findByUserId(userId);
+        model.addAttribute("profile", profile);
         return "profile";
     }
     
-    @GetMapping("/profile-edit")
-    public String profileEdit() {
-        return "profile-edit";
+    // ログイン中のユーザーのプロフィールを表示するエンドポイント
+    @GetMapping("/my-profile")
+    public String myProfile(Model model, Principal principal) {
+        // ログイン中のユーザー情報を取得
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+
+        // プロフィール情報を取得
+        Profile profile = profileRepository.findByUserId(user.getId());
+
+        // プロフィール情報をモデルに追加
+        model.addAttribute("profile", profile);
+        return "myprofile";
+    }
+    
+    @GetMapping("/myprofile-edit")
+    public String showEditProfileForm(Model model, Principal principal) {
+//        // 現在のユーザーのプロフィール情報を取得
+//        UserProfile userProfile = userService.getCurrentUserProfile();
+//        model.addAttribute("userProfile", userProfile);
+//        return "myprofile-edit"; // myprofile-edit.htmlを表示
+        // ログイン中のユーザー情報を取得
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+
+        // プロフィール情報を取得
+        Profile profile = profileRepository.findByUserId(user.getId());
+
+        // プロフィール情報をモデルに追加
+        model.addAttribute("profile", profile);
+        return "myprofile-edit";
+    }
+    
+    @PostMapping("/myprofile-edit")
+    public String editProfile(@ModelAttribute("profile") Profile profile, Principal principal) {
+    	// ログイン中のユーザー情報を取得
+    	String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        profile.setUser(user);
+        // プロフィールの更新処理
+    	profileService.updateProfile(profile);
+    	
+        return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
     }
     
     @PostMapping("/profile-update")
@@ -93,19 +156,9 @@ public class MessageController {
         return "profile";
     }
     
-    @PostMapping("/message")
-    public String message() {
-        return "message";
-    }
-    
-//    @GetMapping("/message-input")
-//    public String messageInput() {
-//        return "message-input";
-//    }
-    
-//    @PostMapping("/message-send")
-//    public String messageSend() {
-//        return "user-list";
+//    @PostMapping("/message")
+//    public String message() {
+//        return "message";
 //    }
     
     @GetMapping("/message/send/{id}")
@@ -160,9 +213,17 @@ public class MessageController {
     @GetMapping("/mailbox")
     public String showMailbox(Model model, Principal principal) {
         User currentUser = userRepository.findByUsername(principal.getName());
+        
+        
 
         // 受信メッセージを取得
         List<Message> receivedMessages = messageRepository.findByRecipientAndStatus(currentUser, "sent");
+        
+        // 新規メッセージの数を計算（開始）
+        long unreadCount = receivedMessages.stream().filter(message -> !message.isReadflag()).count();
+        model.addAttribute("unreadCount", unreadCount);
+     // 新規メッセージの数を計算（終了）
+        
         model.addAttribute("receivedMessages", receivedMessages);
 
         // 送信メッセージを取得
@@ -172,27 +233,33 @@ public class MessageController {
         return "mailbox";  // メールボックスのHTMLを返す
     }
     
-//    @GetMapping("/mailbox")
-//    public String mailbox() {
-//        return "mailbox";
-//    }
-
-//    @PostMapping("/send")
-//    public String sendMessage(@ModelAttribute Message message) {
-//        messageService.sendMessage(message);
-//        return "redirect:/messages?recipient=" + message.getRecipient();
-//    }
-//
-//    // REST API example for sending messages
-//    @PostMapping("/api/messages")
-//    @ResponseBody
-//    public void sendMessageAPI(@RequestBody Message message) {
-//        messageService.sendMessage(message);
-//    }
-//
-//    @GetMapping("/api/messages/{recipient}")
-//    @ResponseBody
-//    public List<Message> getMessagesAPI(@PathVariable String recipient) {
-//        return messageService.getMessages(recipient);
-//    }
+    @GetMapping("/message/received/{id}")
+    public String viewMessage(@PathVariable Long id, Model model) {
+        Message message = messageRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));            
+        
+        // メッセージを既読にする
+        message.setReadflag(true);
+        messageRepository.save(message); // 更新を保存
+        
+        //message.hmtlで使うための情報を詰める
+        model.addAttribute("message", message);
+        
+        // message.htmlを返す
+        return "message"; 
+    }
+    
+    @GetMapping("/message/sent/{id}")
+    public String viewSentMessage(@PathVariable Long id, Model model) {
+        Message message = messageRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));            
+        
+        // 送信箱からの閲覧なので、readflagを変更しない
+        
+        // message.htmlで使うための情報を詰める
+        model.addAttribute("message", message);
+        
+        // message.htmlを返す
+        return "message"; 
+    }
 }

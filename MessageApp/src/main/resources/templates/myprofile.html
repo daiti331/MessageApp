@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィール</title>
+    <title>マイプロフィール</title>
+    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- ナビゲーションバーをインクルード -->
     <div th:replace="navbar.html"></div>
     <div class="container mt-5">
-        <h1>プロフィール</h1>
+        <h1>マイプロフィール</h1>
         <dl class="row">
             <dt class="col-sm-3">ユーザー名</dt>
             <dd class="col-sm-9" th:text="${profile.user.username}">ユーザー名</dd>
@@ -26,7 +28,10 @@
             <dt class="col-sm-3">自己紹介</dt>
             <dd class="col-sm-9" th:text="${profile.bio}">自己紹介</dd>
         </dl>
+        <a th:href="@{/myprofile-edit}" class="btn btn-primary">プロフィールを編集</a>
     </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -8,8 +8,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<!-- ナビゲーションバーをインクルード -->
-	<div th:replace="navbar.html"></div>
+    <!-- ナビゲーションバーをインクルード -->
+    <div th:replace="navbar.html"></div>
     <div class="container mt-5">
         <h2 class="text-center mb-4">メールボックス</h2>
         <ul class="nav nav-tabs">
@@ -28,31 +28,43 @@
         </ul>
         
         <div class="tab-content mt-3">
+<!--			開始-->
+            <!-- 受信箱 -->
+<!--            <div id="inbox" class="tab-pane fade show active">-->
+<!--                <h5>受信箱</h5>-->
+<!--                <ul>-->
+<!--                    <li th:each="message : ${receivedMessages}">-->
+<!--                        <a th:href="@{/message/{id}(id=${message.id})}" th:text="${message.sender.username}">送信者</a>:-->
+<!--                        <small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--				終了-->
+<!--			開始-->
 			<!-- 受信箱 -->
 			<div id="inbox" class="tab-pane fade show active">
 			    <h5>受信箱</h5>
 			    <ul>
 			        <li th:each="message : ${receivedMessages}">
-			            <span th:text="${message.sender.username}">送信者</span>
-			            <span th:text="${message.content}">メッセージ内容</span>
-<!--			            <small th:text="${#dates.format(message.timestamp, 'yyyy/MM/dd HH:mm')}">送信日時</small>-->
-						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+			            <a th:href="@{/message/received/{id}(id=${message.id})}" th:text="${message.sender.username}">送信者</a>:
+			            <small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+			            <!-- 未読メッセージの表示 -->
+			            <span th:if="${!message.readflag}" class="badge badge-warning">新規</span>
 			        </li>
 			    </ul>
 			</div>
+<!--			終了-->
 
-			<!-- 送信箱 -->
-			<div id="sent" class="tab-pane fade">
-			    <h5>送信箱</h5>
-			    <ul>
-			        <li th:each="message : ${sentMessages}">
-			            <span th:text="${message.recipient.username}">受信者</span>:
-			            <span th:text="${message.content}">メッセージ内容</span>
-<!--			            <small th:text="${#dates.format(message.timestamp, 'yyyy/MM/dd HH:mm')}">送信日時</small>-->
-						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
-			        </li>
-			    </ul>
-			</div>
+            <!-- 送信箱 -->
+            <div id="sent" class="tab-pane fade">
+                <h5>送信箱</h5>
+                <ul>
+                    <li th:each="message : ${sentMessages}">
+                        <a th:href="@{/message/sent/{id}(id=${message.id})}" th:text="${message.recipient.username}">受信者</a>:
+                        <small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+                    </li>
+                </ul>
+            </div>
             <!-- 下書き -->
             <div id="drafts" class="tab-pane fade">
                 <h5>下書き</h5>

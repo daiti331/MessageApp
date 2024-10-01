@@ -16,6 +16,6 @@ public class UserRegisterForm {
     private String email;
 
     @NotEmpty(message = "パスワードは必須です")
-    @Size(min = 6, message = "パスワードは6文字以上である必要があります")
+    @Size(min = 1, message = "パスワードは1文字以上である必要があります")
     private String password;
 }

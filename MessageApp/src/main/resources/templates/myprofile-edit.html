@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール編集</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- ナビゲーションバーをインクルード -->
+    <div th:replace="navbar.html"></div>
+    <div class="container mt-5">
+        <h1>プロフィール編集</h1>
+        <form th:action="@{/myprofile-edit}" th:object="${profile}" method="post">
+			<!-- hidden input for profile id -->
+			<input type="hidden" name="id" th:value="${profile.id}">
+            <div class="form-group">
+                <label for="username">ユーザー名</label>
+                <input type="text" id="username" class="form-control" th:value="${profile.user.username}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="age">年齢</label>
+                <input type="number" id="age" name="age" class="form-control" th:value="${profile.age}" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">性別</label>
+                <select id="gender" name="gender" class="form-control" required>
+                    <option th:value="${profile.gender}" th:text="${profile.gender}" selected></option>
+                    <option value="男性">男性</option>
+                    <option value="女性">女性</option>
+                    <option value="その他">その他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="location">居住地域</label>
+                <input type="text" id="location" name="location" class="form-control" th:value="${profile.location}" required>
+            </div>
+            <div class="form-group">
+                <label for="bio">自己紹介</label>
+                <textarea id="bio" name="bio" class="form-control" rows="4" required th:text="${profile.bio}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">保存</button>
+            <a th:href="@{/my-profile}" class="btn btn-secondary">キャンセル</a>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

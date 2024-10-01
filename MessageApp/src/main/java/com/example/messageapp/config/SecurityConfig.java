@@ -67,7 +67,12 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout((logout) -> logout
-                .permitAll());
+                    .logoutUrl("/logout") // ログアウトのURL
+                    .logoutSuccessUrl("/login?logout") // ログアウト後にリダイレクトするURL
+                    .invalidateHttpSession(true) // セッションの無効化
+                    .deleteCookies("JSESSIONID") // クッキーの削除
+                    .permitAll()
+                );
 
         return http.build();
     }

@@ -11,18 +11,21 @@
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card shadow-lg p-4" style="width: 400px;">
             <h2 class="text-center mb-4">サインアップ</h2>
-            <form th:action="@{/signup}" method="post">
+            <form th:action="@{/signup}" th:object="${userRegisterForm}" method="post">
                 <div class="form-group">
                     <label for="username">ユーザー名</label>
                     <input type="text" id="username" name="username" class="form-control" placeholder="ユーザー名" required>
+					<div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*"></div>
                 </div>
                 <div class="form-group">
                     <label for="email">メールアドレス</label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="メールアドレス" required>
+					<div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">パスワード</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="パスワード" required>
+					<div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*"></div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">サインアップ</button>
             </form>
