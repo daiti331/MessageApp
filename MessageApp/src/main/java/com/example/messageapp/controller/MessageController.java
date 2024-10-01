@@ -207,11 +207,11 @@ public class MessageController {
         
         messageRepository.save(message);
 
-        return "redirect:/mailbox";  // メールボックスにリダイレクト
+        return "redirect:/message/box";  // メールボックスにリダイレクト
     }
     
-    @GetMapping("/mailbox")
-    public String showMailbox(Model model, Principal principal) {
+    @GetMapping("/message/box")
+    public String showmessagebox(Model model, Principal principal) {
         User currentUser = userRepository.findByUsername(principal.getName());
         
         
@@ -230,7 +230,7 @@ public class MessageController {
         List<Message> sentMessages = messageRepository.findBySenderAndStatus(currentUser, "sent");
         model.addAttribute("sentMessages", sentMessages);
 
-        return "mailbox";  // メールボックスのHTMLを返す
+        return "message-box";  // メールボックスのHTMLを返す
     }
     
     @GetMapping("/message/received/{id}")
@@ -244,6 +244,9 @@ public class MessageController {
         
         //message.hmtlで使うための情報を詰める
         model.addAttribute("message", message);
+        
+        // 受信メッセージかどうかのフラグを追加（返信ぼたん表示のため）
+        model.addAttribute("isSentMessage", false);
         
         // message.htmlを返す
         return "message"; 
@@ -259,7 +262,35 @@ public class MessageController {
         // message.htmlで使うための情報を詰める
         model.addAttribute("message", message);
         
+        // 送信メッセージかどうかのフラグを追加（返信ぼたん非表示のため）
+        model.addAttribute("isSentMessage", true);
+        
         // message.htmlを返す
         return "message"; 
+    }
+    
+    @PostMapping("/message/reply")
+    public String replyToMessage(@RequestParam Long recipientId, @RequestParam String content, Principal principal) {
+        // 返信メッセージを作成
+        Message replyMessage = new Message();
+        replyMessage.setContent(content);
+        
+        // 送信者と受信者の設定
+        String username = principal.getName();
+        User sender = userRepository.findByUsername(username);// 現在のユーザーを取得（認証機能に応じて）
+        User recipient = userRepository.findById(recipientId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid recipient Id:" + recipientId));
+        replyMessage.setSender(sender);
+        replyMessage.setRecipient(recipient);
+        
+        // タイムスタンプやステータスの設定（必要に応じて）
+        replyMessage.setTimestamp(LocalDateTime.now());
+        replyMessage.setStatus("sent"); // または適切なステータス
+
+        // メッセージを保存
+        messageRepository.save(replyMessage);
+
+        // メールボックスにリダイレクト
+        return "redirect:/message/box";
     }
 }
