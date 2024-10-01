@@ -10,25 +10,46 @@
 <body>
     <!-- ナビゲーションバーをインクルード -->
     <div th:replace="navbar.html"></div>
+
     <div class="container mt-5">
-        <h1>マイプロフィール</h1>
-        <dl class="row">
-            <dt class="col-sm-3">ユーザー名</dt>
-            <dd class="col-sm-9" th:text="${profile.user.username}">ユーザー名</dd>
-
-            <dt class="col-sm-3">年齢</dt>
-            <dd class="col-sm-9" th:text="${profile.age}">年齢</dd>
-
-            <dt class="col-sm-3">性別</dt>
-            <dd class="col-sm-9" th:text="${profile.gender}">性別</dd>
-
-            <dt class="col-sm-3">居住地域</dt>
-            <dd class="col-sm-9" th:text="${profile.location}">居住地域</dd>
-
-            <dt class="col-sm-3">自己紹介</dt>
-            <dd class="col-sm-9" th:text="${profile.bio}">自己紹介</dd>
-        </dl>
-        <a th:href="@{/myprofile-edit}" class="btn btn-primary">プロフィールを編集</a>
+        <h1 class="text-center mb-4">マイプロフィール</h1>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col" style="width: 30%;">項目</th>
+                            <th scope="col" style="width: 70%;">詳細</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">ユーザー名</th>
+                            <td th:text="${profile.user.username}">ユーザー名</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">年齢</th>
+                            <td th:text="${profile.age}">年齢</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">性別</th>
+                            <td th:text="${profile.gender}">性別</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">居住地域</th>
+                            <td th:text="${profile.location}">居住地域</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">自己紹介</th>
+                            <td th:text="${profile.bio}">自己紹介</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center mt-4">
+                    <a th:href="@{/myprofile-edit}" class="btn btn-primary btn-lg">プロフィールを編集</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
