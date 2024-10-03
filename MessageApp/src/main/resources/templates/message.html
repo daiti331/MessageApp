@@ -24,7 +24,7 @@
             </div>
             <div class="card-footer text-end">
                 <div class="mt-3">
-                    <a th:href="@{/message/box}" class="btn btn-primary">戻る</a>
+                    <a th:href="@{/message/box}" class="btn btn-primary">メールボックスへ戻る</a>
                     <!-- 送信メッセージでない場合のみ返信ボタンを表示 -->
                     <div th:if="${!isSentMessage}" class="d-inline-block ms-2">
                         <button class="btn btn-info" data-toggle="collapse" data-target="#replyForm">返信</button>

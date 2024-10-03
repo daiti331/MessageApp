@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.messageapp.entity.Profile;
 import com.example.messageapp.entity.User;
 import com.example.messageapp.form.UserRegisterForm;
 import com.example.messageapp.repository.MessageRepository;
@@ -104,6 +105,12 @@ public class UserController {
         List<User> users = userRepository.findAll().stream() //取得したリストをストリームに変換して1件ずつ処理
             .filter(user -> !user.getUsername().equals(loggedInUsername)) // 自分を除外
             .collect(Collectors.toList());
+        
+        // 各ユーザーに対してプロフィール情報を取得し、ユーザーオブジェクトにセット
+        users.forEach(user -> {
+            Profile profile = profileRepository.findByUserId(user.getId());
+            user.setProfile(profile); // ユーザーにプロフィール情報を設定
+        });
 
         model.addAttribute("users", users);
         return "user-list"; // user-list.htmlというテンプレートにリストを渡す

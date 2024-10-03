@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import lombok.Data;
@@ -29,4 +30,7 @@ public class User {
     
     @Column(nullable = false, unique = true)
     private String email;
+    
+    @OneToOne(mappedBy = "user")
+    private Profile profile; // プロフィール情報を持つ
 }

@@ -14,12 +14,20 @@
             <thead>
                 <tr>
                     <th>ユーザー名</th>
+                    <th>年齢</th>
+                    <th>性別</th>
+                    <th>居住地域</th>
+                    <th>自己紹介</th>
                     <th>アクション</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="user : ${users}">
                     <td th:text="${user.username}">ユーザー名</td>
+                    <td th:text="${user.profile.age}">年齢</td>
+                    <td th:text="${user.profile.gender}">性別</td>
+                    <td th:text="${user.profile.location}">居住地域</td>
+                    <td th:text="${user.profile.bio}">自己紹介</td>
                     <td>
                         <a class="btn btn-primary" th:href="@{'/message/send/' + ${user.id}}">メッセージを送る</a>
                         <a class="btn btn-info" th:href="@{'/profile/' + ${user.id}}">プロフィールを表示</a>
@@ -28,6 +36,10 @@
             </tbody>
         </table>
     </div>
+	
+	<!-- 共通フッターの挿入 -->
+	<div th:replace="footer.html"></div>
+	
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
