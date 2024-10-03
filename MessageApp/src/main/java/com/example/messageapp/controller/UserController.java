@@ -1,9 +1,12 @@
 package com.example.messageapp.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -75,13 +78,36 @@ public class UserController {
         return "login";
     }
     
-    //ユーザーリストボタンが押下されたときの処理
+//    //ユーザーリストボタンが押下されたときの処理
+//    @GetMapping("/user-list")
+//    public String userList(Model model, Principal principal) {
+//    	
+//    	// 自分のユーザー情報を取得
+//        String username = principal.getName();     
+//
+//     // usersテーブルからすべてのユーザーを取得し、自分を除外
+//        List<User> users = userRepository.findAll().stream()
+//            .filter(user -> !user.getUsername().equals(username)) // 自分を除外
+//            .collect(Collectors.toList());
+//        
+//        model.addAttribute("users", users);
+//        return "user-list"; // user-list.htmlというテンプレートにリストを渡す
+//    }
+    
+    //@AuthenticationPrincipalはログイン中のユーザー情報の詳細を取得できる。Principalはユーザーネームだけ。
     @GetMapping("/user-list")
-    public String userList(Model model) {
-        // usersテーブルからすべてのユーザーを取得
-        List<User> users = userRepository.findAll();
+    public String userList(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+        // 現在のログインユーザーの情報を取得
+        String loggedInUsername = currentUser.getUsername();
+
+        // usersテーブルからすべてのユーザーを取得し、自分を除外
+        List<User> users = userRepository.findAll().stream() //取得したリストをストリームに変換して1件ずつ処理
+            .filter(user -> !user.getUsername().equals(loggedInUsername)) // 自分を除外
+            .collect(Collectors.toList());
+
         model.addAttribute("users", users);
         return "user-list"; // user-list.htmlというテンプレートにリストを渡す
     }
+
 
 }
