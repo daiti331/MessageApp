@@ -1,4 +1,4 @@
-package com.example.messageapp.servicce;
+package com.example.messageapp.service;
 
 import java.util.List;
 import java.util.Optional;

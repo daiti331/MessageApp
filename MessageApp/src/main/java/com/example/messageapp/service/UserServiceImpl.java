@@ -1,11 +1,15 @@
-package com.example.messageapp.servicce;
+package com.example.messageapp.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.messageapp.entity.Profile;
 import com.example.messageapp.entity.User;
+import com.example.messageapp.repository.ProfileRepository;
 import com.example.messageapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 	private final BCryptPasswordEncoder passwordEncoder; //パスワードをハッシュ化用
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository; // プロフィールリポジトリをインジェクト
+
 
     // 新しいユーザーを登録するメソッド
     @Override
@@ -31,6 +37,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+    
+    @Override
+    public List<User> findAllUsersExcept(String username) {
+        return userRepository.findAll().stream()
+            .filter(user -> !user.getUsername().equals(username))
+            .collect(Collectors.toList());
+    }
+    
+    @Override
+    public void populateUserProfiles(List<User> users) {
+        users.forEach(user -> {
+            Profile profile = profileRepository.findByUserId(user.getId());
+            user.setProfile(profile); // ユーザーにプロフィール情報を設定
+        });
     }
 
 }

@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.messageapp.entity.Message;
 import com.example.messageapp.entity.User;
-import com.example.messageapp.repository.MessageRepository;
-import com.example.messageapp.repository.ProfileRepository;
-import com.example.messageapp.repository.UserRepository;
-import com.example.messageapp.servicce.MessageService;
-import com.example.messageapp.servicce.ProfileService;
-import com.example.messageapp.servicce.UserService;
+import com.example.messageapp.service.MessageService;
+import com.example.messageapp.service.ProfileService;
+import com.example.messageapp.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,33 +24,12 @@ import lombok.RequiredArgsConstructor;
 public class MessageController {
 	
     private final UserService userService; // UserServiceインターフェースを使用
-    private final UserRepository userRepository;
-    private final MessageRepository messageRepository;
-    private final ProfileRepository profileRepository;
     private final ProfileService profileService;
     private final MessageService messageService;  // Serviceを注入
     
     //メールボックスの初期表示
     @GetMapping("/message/box")
     public String showmessagebox(Model model, Principal principal) {
-//        User currentUser = userRepository.findByUsername(principal.getName());
-//        
-//        // 受信メッセージを取得
-//        List<Message> receivedMessages = messageRepository.findByRecipientAndStatus(currentUser, "sent");
-//        
-//        
-//        // 新規メッセージの数を計算（開始）
-//        long unreadCount = receivedMessages.stream().filter(message -> !message.isReadflag()).count();
-//        model.addAttribute("unreadCount", unreadCount);
-//     // 新規メッセージの数を計算（終了）
-//        
-//        model.addAttribute("receivedMessages", receivedMessages);
-//
-//        // 送信メッセージを取得
-//        List<Message> sentMessages = messageRepository.findBySenderAndStatus(currentUser, "sent");
-//        model.addAttribute("sentMessages", sentMessages);
-//
-//        return "message-box";  // メールボックスのHTMLを返す
     	
         // UserRepositoryではなく、UserServiceを利用
         User currentUser = userService.findByUsername(principal.getName());
@@ -77,8 +53,6 @@ public class MessageController {
     @GetMapping("/message/send/{id}")
     public String sendMessage(@PathVariable("id") Long userId, Model model) {
         // ユーザーIDに基づいて送信先のユーザーを取得
-//        User recipient = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
-        // ユーザーIDに基づいて送信先のユーザーを取得
         User recipient = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
     	model.addAttribute("recipient", recipient);
@@ -101,16 +75,8 @@ public class MessageController {
     	// Principalからユーザー名を取得
         String username = principal.getName();
         
-//     // ユーザー名を使ってデータベースからUserオブジェクトを取得
-//        User sender = userRepository.findByUsername(username);
-        
         // ユーザー名を使ってデータベースからUserオブジェクトを取得（UserServiceを利用）
         User sender = userService.findByUsername(username);
-        
-//        //User sender = userRepository.findByUsername(principal.getName());
-//        // 送信先のユーザーを取得
-//        User recipient = userRepository.findById(recipientId)
-//                .orElseThrow(() -> new RuntimeException("Recipient not found"));
         
         // 送信先のユーザーを取得（UserServiceを利用）
         User recipient = userService.findById(recipientId)
@@ -118,21 +84,6 @@ public class MessageController {
         
         // メッセージ送信処理をMessageServiceに委譲
         messageService.sendMessage(sender, recipient, content);
-        
-//        Message message = new Message();
-//        message.setSender(sender);
-//        message.setRecipient(recipient);
-//        message.setContent(content);
-//        message.setTimestamp(LocalDateTime.now());
-//        message.setStatus("sent");
-        
-//        System.out.println("Sending message to: " + recipient.getId());
-//        System.out.println("Message content: " + content);
-//        System.out.println("Sending message to: " + sender.getId());
-//        System.out.println("Sending message to: " + message.getTimestamp());
-//        System.out.println("Message content: " + message.getStatus());
-        
-//        messageRepository.save(message);
 
         return "redirect:/message/box";  // メールボックスにリダイレクト
     }
@@ -140,8 +91,6 @@ public class MessageController {
     //メールボックスの送信箱から特定のメールを開いたときの処理
     @GetMapping("/message/sent/{id}")
     public String viewSentMessage(@PathVariable Long id, Model model) {
-//        Message message = messageRepository.findById(id)
-//            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));    
         
         // メッセージIDに基づいてメッセージを取得
         Message message = messageService.findById(id)
@@ -162,16 +111,10 @@ public class MessageController {
     //メールボックスの受信箱から特定のメールを開いたときの処理
     @GetMapping("/message/received/{id}")
     public String viewMessage(@PathVariable Long id, Model model) {
-//        Message message = messageRepository.findById(id)
-//            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));   
         
         // メッセージIDに基づいてメッセージを取得
         Message message = messageService.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id)); 
-        
-//        // メッセージを既読にする
-//        message.setReadflag(true);
-//        messageRepository.save(message); // 更新を保存
         
         // メッセージを既読にする
         messageService.markAsRead(message); // Serviceで既読フラグを更新
@@ -195,9 +138,6 @@ public class MessageController {
         
         // 送信者と受信者の設定
         String username = principal.getName();
-//        User sender = userRepository.findByUsername(username);// 現在のユーザーを取得（認証機能に応じて）
-//        User recipient = userRepository.findById(recipientId)
-//            .orElseThrow(() -> new IllegalArgumentException("Invalid recipient Id:" + recipientId));
         
         User sender = userService.findByUsername(username); // UserServiceを利用
         User recipient = userService.findById(recipientId) // UserServiceを利用
@@ -208,9 +148,6 @@ public class MessageController {
         // タイムスタンプやステータスの設定（必要に応じて）
         replyMessage.setTimestamp(LocalDateTime.now());
         replyMessage.setStatus("sent"); // または適切なステータス
-
-//        // メッセージを保存
-//        messageRepository.save(replyMessage);
         
         // メッセージを保存
         messageService.saveMessage(replyMessage); // Serviceでメッセージを保存

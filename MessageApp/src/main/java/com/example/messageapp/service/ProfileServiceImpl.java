@@ -1,4 +1,4 @@
-package com.example.messageapp.servicce;
+package com.example.messageapp.service;
 
 import org.springframework.stereotype.Service;
 
@@ -32,5 +32,10 @@ public class ProfileServiceImpl implements ProfileService {
 		// プロフィールをリポジトリに保存（更新）
         profileRepository.save(profile);
 	}
+	
+    @Override
+    public Profile findByUserId(Long userId) {
+        return profileRepository.findByUserId(userId); // プロフィールを取得
+    }
 
 }
