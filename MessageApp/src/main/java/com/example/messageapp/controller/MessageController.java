@@ -16,6 +16,7 @@ import com.example.messageapp.entity.User;
 import com.example.messageapp.repository.MessageRepository;
 import com.example.messageapp.repository.ProfileRepository;
 import com.example.messageapp.repository.UserRepository;
+import com.example.messageapp.servicce.MessageService;
 import com.example.messageapp.servicce.ProfileService;
 import com.example.messageapp.servicce.UserService;
 
@@ -30,26 +31,43 @@ public class MessageController {
     private final MessageRepository messageRepository;
     private final ProfileRepository profileRepository;
     private final ProfileService profileService;
+    private final MessageService messageService;  // Serviceを注入
     
     //メールボックスの初期表示
     @GetMapping("/message/box")
     public String showmessagebox(Model model, Principal principal) {
-        User currentUser = userRepository.findByUsername(principal.getName());
-        
-        
+//        User currentUser = userRepository.findByUsername(principal.getName());
+//        
+//        // 受信メッセージを取得
+//        List<Message> receivedMessages = messageRepository.findByRecipientAndStatus(currentUser, "sent");
+//        
+//        
+//        // 新規メッセージの数を計算（開始）
+//        long unreadCount = receivedMessages.stream().filter(message -> !message.isReadflag()).count();
+//        model.addAttribute("unreadCount", unreadCount);
+//     // 新規メッセージの数を計算（終了）
+//        
+//        model.addAttribute("receivedMessages", receivedMessages);
+//
+//        // 送信メッセージを取得
+//        List<Message> sentMessages = messageRepository.findBySenderAndStatus(currentUser, "sent");
+//        model.addAttribute("sentMessages", sentMessages);
+//
+//        return "message-box";  // メールボックスのHTMLを返す
+    	
+        // UserRepositoryではなく、UserServiceを利用
+        User currentUser = userService.findByUsername(principal.getName());
 
         // 受信メッセージを取得
-        List<Message> receivedMessages = messageRepository.findByRecipientAndStatus(currentUser, "sent");
-        
-        // 新規メッセージの数を計算（開始）
-        long unreadCount = receivedMessages.stream().filter(message -> !message.isReadflag()).count();
-        model.addAttribute("unreadCount", unreadCount);
-     // 新規メッセージの数を計算（終了）
-        
+        List<Message> receivedMessages = messageService.getReceivedMessages(currentUser);
         model.addAttribute("receivedMessages", receivedMessages);
 
+        // 新規メッセージの数を計算
+        long unreadCount = messageService.getUnreadCount(currentUser);
+        model.addAttribute("unreadCount", unreadCount);
+
         // 送信メッセージを取得
-        List<Message> sentMessages = messageRepository.findBySenderAndStatus(currentUser, "sent");
+        List<Message> sentMessages = messageService.getSentMessages(currentUser);
         model.addAttribute("sentMessages", sentMessages);
 
         return "message-box";  // メールボックスのHTMLを返す
@@ -80,28 +98,38 @@ public class MessageController {
     	// Principalからユーザー名を取得
         String username = principal.getName();
         
-     // ユーザー名を使ってデータベースからUserオブジェクトを取得
-        User sender = userRepository.findByUsername(username);
+//     // ユーザー名を使ってデータベースからUserオブジェクトを取得
+//        User sender = userRepository.findByUsername(username);
         
-        //User sender = userRepository.findByUsername(principal.getName());
-        // 送信先のユーザーを取得
-        User recipient = userRepository.findById(recipientId)
+        // ユーザー名を使ってデータベースからUserオブジェクトを取得（UserServiceを利用）
+        User sender = userService.findByUsername(username);
+        
+//        //User sender = userRepository.findByUsername(principal.getName());
+//        // 送信先のユーザーを取得
+//        User recipient = userRepository.findById(recipientId)
+//                .orElseThrow(() -> new RuntimeException("Recipient not found"));
+        
+        // 送信先のユーザーを取得（UserServiceを利用）
+        User recipient = userService.findById(recipientId)
                 .orElseThrow(() -> new RuntimeException("Recipient not found"));
         
-        Message message = new Message();
-        message.setSender(sender);
-        message.setRecipient(recipient);
-        message.setContent(content);
-        message.setTimestamp(LocalDateTime.now());
-        message.setStatus("sent");
+        // メッセージ送信処理をMessageServiceに委譲
+        messageService.sendMessage(sender, recipient, content);
         
-        System.out.println("Sending message to: " + recipient.getId());
-        System.out.println("Message content: " + content);
-        System.out.println("Sending message to: " + sender.getId());
-        System.out.println("Sending message to: " + message.getTimestamp());
-        System.out.println("Message content: " + message.getStatus());
+//        Message message = new Message();
+//        message.setSender(sender);
+//        message.setRecipient(recipient);
+//        message.setContent(content);
+//        message.setTimestamp(LocalDateTime.now());
+//        message.setStatus("sent");
         
-        messageRepository.save(message);
+//        System.out.println("Sending message to: " + recipient.getId());
+//        System.out.println("Message content: " + content);
+//        System.out.println("Sending message to: " + sender.getId());
+//        System.out.println("Sending message to: " + message.getTimestamp());
+//        System.out.println("Message content: " + message.getStatus());
+        
+//        messageRepository.save(message);
 
         return "redirect:/message/box";  // メールボックスにリダイレクト
     }

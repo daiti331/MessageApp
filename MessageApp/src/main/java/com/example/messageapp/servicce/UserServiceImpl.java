@@ -1,5 +1,7 @@
 package com.example.messageapp.servicce;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,16 @@ public class UserServiceImpl implements UserService {
     public void registerUser(User user) {
     	user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user); // ユーザーを保存
+    }
+    
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
 }
