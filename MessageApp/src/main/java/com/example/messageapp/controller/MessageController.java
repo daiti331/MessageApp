@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.messageapp.entity.Message;
 import com.example.messageapp.entity.User;
 import com.example.messageapp.service.MessageService;
-import com.example.messageapp.service.ProfileService;
 import com.example.messageapp.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,14 @@ import lombok.RequiredArgsConstructor;
 public class MessageController {
 	
     private final UserService userService; // UserServiceインターフェースを使用
-    private final ProfileService profileService;
     private final MessageService messageService;  // Serviceを注入
+    
+    // 共通処理：未読メッセージのカウントをモデルに追加
+    @ModelAttribute
+    public void addUnreadCountToModel(Model model, Principal principal) {
+        long unreadCount = messageService.getUnreadCountForUser(principal);
+        model.addAttribute("unreadCount", unreadCount);
+    }
     
     //メールボックスの初期表示
     @GetMapping("/message/box")

@@ -33,4 +33,8 @@ public class User {
     
     @OneToOne(mappedBy = "user")
     private Profile profile; // プロフィール情報を持つ
+    
+//    //変更開始
+//    private boolean enabled; // 有効フラグの追加
+//    //変更終了
 }

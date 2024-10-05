@@ -15,4 +15,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     
     // 送信メッセージを取得
     List<Message> findBySenderAndStatus(User sender, String status);
+    
+    // 受信者と未読フラグを基にカウントを取得するメソッド
+    long countByRecipientAndReadflag(User receiver, boolean isRead);
 }

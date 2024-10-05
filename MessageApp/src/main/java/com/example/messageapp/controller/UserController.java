@@ -1,5 +1,6 @@
 package com.example.messageapp.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.messageapp.entity.User;
 import com.example.messageapp.form.UserRegisterForm;
+import com.example.messageapp.service.MessageService;
 import com.example.messageapp.service.ProfileService;
 import com.example.messageapp.service.UserService;
 
@@ -25,12 +27,43 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService userService; // UserServiceインターフェースを使用
     private final ProfileService profileService;
+    private final MessageService messageService;
+    
+//    //変更開始
+//    private final VerificationTokenRepository verificationTokenRepository;
+//    private final UserRepository userRepository;
+//    private final EmailService emailService;
+//    //変更終了
+    
+    // 共通処理：未読メッセージのカウントをモデルに追加
+    @ModelAttribute
+    public void addUnreadCountToModel(Model model, Principal principal) {
+        long unreadCount = messageService.getUnreadCountForUser(principal);
+        model.addAttribute("unreadCount", unreadCount);
+    }
     
     //まだどこに飛ばすか未定
     @GetMapping("/")
     public String top() {
         return "top";
     }
+    
+//    //変更開始
+//    @GetMapping("/confirm")
+//    public String confirmEmail(@RequestParam("token") String token) {
+//        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+//        if (verificationToken == null) {
+//            // トークンが無効な場合の処理
+//            return "redirect:/signup?error"; // エラー画面にリダイレクト
+//        }
+//        
+//        User user = verificationToken.getUser();
+//        user.setEnabled(true); // ユーザーのアカウントを有効化
+//        userRepository.save(user); // ユーザー情報を保存
+//        
+//        return "redirect:/login"; // 確認後はログインページへリダイレクト
+//    }
+//    //変更終了
     
     // サインアップページを表示
     @GetMapping("/signup")
@@ -52,13 +85,18 @@ public class UserController {
         user.setPassword(userRegisterForm.getPassword());
 		user.setEmail(userRegisterForm.getEmail());
 		user.setRole("user");
-		try {
 		//ユーザーを作成
 		userService.registerUser(user);
-		} catch (Exception e) {
-			System.err.println("ユーザーの作成に失敗しました: " + e.getMessage());
-		}
 		
+//		//変更開始
+//	    // 確認トークンを生成（UUIDなどを利用）
+//	    String token = UUID.randomUUID().toString();
+//	    userService.createVerificationToken(user, token);
+//
+//	    // 確認メールを送信
+//	    emailService.sendConfirmationEmail(user.getEmail(), token);
+//	  //変更終了
+
 	    // プロフィールを作成
 	    profileService.createProfile(user); // ユーザーを引数として渡す
         

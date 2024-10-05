@@ -24,6 +24,13 @@ public class ProfileController {
     private final ProfileService profileService;
     private final MessageService messageService;
     
+    // 共通処理：未読メッセージのカウントをモデルに追加
+    @ModelAttribute
+    public void addUnreadCountToModel(Model model, Principal principal) {
+        long unreadCount = messageService.getUnreadCountForUser(principal);
+        model.addAttribute("unreadCount", unreadCount);
+    }
+    
     //ユーザーリストから押下したユーザーのプロフィールを表示
     @GetMapping("/profile/{userId}")
     public String profile(@PathVariable Long userId, Model model) {

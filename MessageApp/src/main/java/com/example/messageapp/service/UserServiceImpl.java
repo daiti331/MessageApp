@@ -20,6 +20,10 @@ public class UserServiceImpl implements UserService {
 	private final BCryptPasswordEncoder passwordEncoder; //パスワードをハッシュ化用
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository; // プロフィールリポジトリをインジェクト
+//    //変更開始
+//    private final VerificationTokenRepository verificationTokenRepository;
+//    //変更終了
+
 
 
     // 新しいユーザーを登録するメソッド
@@ -53,5 +57,14 @@ public class UserServiceImpl implements UserService {
             user.setProfile(profile); // ユーザーにプロフィール情報を設定
         });
     }
+    
+//    //変更開始
+//    @Override
+//    public void createVerificationToken(User user, String token) {
+//        // トークンをデータベースに保存する処理を追加
+//        VerificationToken verificationToken = new VerificationToken(token, user);
+//        verificationTokenRepository.save(verificationToken);
+//    }
+//    //変更終了
 
 }

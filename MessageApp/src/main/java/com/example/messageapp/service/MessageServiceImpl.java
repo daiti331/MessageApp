@@ -1,5 +1,6 @@
 package com.example.messageapp.service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,5 +65,16 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void saveMessage(Message message) {
         messageRepository.save(message); // メッセージを保存
+    }
+    
+    
+    
+    @Override
+    public long getUnreadCountForUser(Principal principal) {
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName());
+            return messageRepository.countByRecipientAndReadflag(user, false);
+        }
+        return 0;
     }
 }
