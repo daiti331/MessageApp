@@ -2,6 +2,7 @@ package com.example.messageapp.servicce;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,22 @@ public class MessageServiceImpl implements MessageService {
         message.setStatus("sent");
         
         messageRepository.save(message);
+    }
+    
+    // メッセージIDに基づいてメッセージを取得するメソッドの実装
+    @Override
+    public Optional<Message> findById(Long id) {
+        return messageRepository.findById(id);
+    }
+    
+    @Override
+    public void markAsRead(Message message) {
+        message.setReadflag(true);
+        messageRepository.save(message); // メッセージの更新を保存
+    }
+    
+    @Override
+    public void saveMessage(Message message) {
+        messageRepository.save(message); // メッセージを保存
     }
 }

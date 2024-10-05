@@ -77,8 +77,11 @@ public class MessageController {
     @GetMapping("/message/send/{id}")
     public String sendMessage(@PathVariable("id") Long userId, Model model) {
         // ユーザーIDに基づいて送信先のユーザーを取得
-        User recipient = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
-        model.addAttribute("recipient", recipient);
+//        User recipient = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+        // ユーザーIDに基づいて送信先のユーザーを取得
+        User recipient = userService.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+    	model.addAttribute("recipient", recipient);
         return "send-message"; // メッセージ送信用のテンプレート
     }
     
@@ -137,8 +140,12 @@ public class MessageController {
     //メールボックスの送信箱から特定のメールを開いたときの処理
     @GetMapping("/message/sent/{id}")
     public String viewSentMessage(@PathVariable Long id, Model model) {
-        Message message = messageRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));            
+//        Message message = messageRepository.findById(id)
+//            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));    
+        
+        // メッセージIDに基づいてメッセージを取得
+        Message message = messageService.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id)); 
         
         // 送信箱からの閲覧なので、readflagを変更しない
         
@@ -155,12 +162,19 @@ public class MessageController {
     //メールボックスの受信箱から特定のメールを開いたときの処理
     @GetMapping("/message/received/{id}")
     public String viewMessage(@PathVariable Long id, Model model) {
-        Message message = messageRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));            
+//        Message message = messageRepository.findById(id)
+//            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));   
+        
+        // メッセージIDに基づいてメッセージを取得
+        Message message = messageService.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id)); 
+        
+//        // メッセージを既読にする
+//        message.setReadflag(true);
+//        messageRepository.save(message); // 更新を保存
         
         // メッセージを既読にする
-        message.setReadflag(true);
-        messageRepository.save(message); // 更新を保存
+        messageService.markAsRead(message); // Serviceで既読フラグを更新
         
         //message.hmtlで使うための情報を詰める
         model.addAttribute("message", message);
@@ -181,8 +195,12 @@ public class MessageController {
         
         // 送信者と受信者の設定
         String username = principal.getName();
-        User sender = userRepository.findByUsername(username);// 現在のユーザーを取得（認証機能に応じて）
-        User recipient = userRepository.findById(recipientId)
+//        User sender = userRepository.findByUsername(username);// 現在のユーザーを取得（認証機能に応じて）
+//        User recipient = userRepository.findById(recipientId)
+//            .orElseThrow(() -> new IllegalArgumentException("Invalid recipient Id:" + recipientId));
+        
+        User sender = userService.findByUsername(username); // UserServiceを利用
+        User recipient = userService.findById(recipientId) // UserServiceを利用
             .orElseThrow(() -> new IllegalArgumentException("Invalid recipient Id:" + recipientId));
         replyMessage.setSender(sender);
         replyMessage.setRecipient(recipient);
@@ -191,8 +209,11 @@ public class MessageController {
         replyMessage.setTimestamp(LocalDateTime.now());
         replyMessage.setStatus("sent"); // または適切なステータス
 
+//        // メッセージを保存
+//        messageRepository.save(replyMessage);
+        
         // メッセージを保存
-        messageRepository.save(replyMessage);
+        messageService.saveMessage(replyMessage); // Serviceでメッセージを保存
 
         // メールボックスにリダイレクト
         return "redirect:/message/box";
