@@ -61,13 +61,11 @@ public class UserServiceImpl implements UserService {
         });
     }
     
-    //変更開始
     @Override
     public void createVerificationToken(User user, String token) {
         // トークンをデータベースに保存する処理を追加
         VerificationToken verificationToken = new VerificationToken(token, user);
         verificationTokenRepository.save(verificationToken);
     }
-    //変更終了
 
 }

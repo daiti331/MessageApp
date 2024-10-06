@@ -37,8 +37,6 @@ public class Message {
 
     private String status;  // sent, draft, deleted
     
-    // 新しく追加するフィールド（開始）
     private boolean readflag = false; // 初期値は未読
-    // 新しく追加するフィールド（終了）
 
 }

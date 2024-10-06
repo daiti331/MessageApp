@@ -11,8 +11,6 @@ public interface UserService {
     Optional<User> findById(Long id);  // ユーザーをIDで検索するメソッドを追加
     List<User> findAllUsersExcept(String username); // 新たに追加
     void populateUserProfiles(List<User> users); // 新たに追加
-    //変更開始
     void createVerificationToken(User user, String token);
-    //変更終了
 
 }

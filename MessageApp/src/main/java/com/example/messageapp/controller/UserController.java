@@ -35,11 +35,9 @@ public class UserController {
     private final ProfileService profileService;
     private final MessageService messageService;
     
-    //変更開始
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
-    //変更終了
     
     // 共通処理：未読メッセージのカウントをモデルに追加
     @ModelAttribute
@@ -54,23 +52,25 @@ public class UserController {
         return "top";
     }
     
-    //変更開始
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token) {
-    	System.out.println("実行されています");
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
         if (verificationToken == null) {
             // トークンが無効な場合の処理
             return "redirect:/signup?error"; // エラー画面にリダイレクト
         }
-        
+        // トークンが期限切れかどうかを確認
+        if (verificationToken.isExpired()) {
+            // トークンが期限切れの場合の処理
+            return "redirect:/signup?error=tokenExpired"; // 期限切れエラーページにリダイレクト
+        }
+
         User user = verificationToken.getUser();
         user.setEnabled(true); // ユーザーのアカウントを有効化
         userRepository.save(user); // ユーザー情報を保存
         
         return "redirect:/login"; // 確認後はログインページへリダイレクト
     }
-    //変更終了
     
     // サインアップページを表示
     @GetMapping("/signup")
@@ -98,14 +98,12 @@ public class UserController {
 	    // プロフィールを作成
 	    profileService.createProfile(user); // ユーザーを引数として渡す
 		
-		//変更開始
 	    // 確認トークンを生成（UUIDなどを利用）
 	    String token = UUID.randomUUID().toString();
 	    userService.createVerificationToken(user, token);
 
 	    // 確認メールを送信
 	    emailService.sendConfirmationEmail(user.getEmail(), token);
-	  //変更終了
 	    
         return "redirect:/login"; // 登録後はログインページへリダイレクト
     }
