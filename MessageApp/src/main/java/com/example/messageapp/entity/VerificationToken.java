@@ -34,6 +34,6 @@ public class VerificationToken {
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;
-        this.expiryDate = new Date(System.currentTimeMillis() + 3600000); // 1時間の有効期限
+        this.expiryDate = new Date(System.currentTimeMillis() + 36000); // 1時間の有効期限
     }
 }

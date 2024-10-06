@@ -57,6 +57,7 @@ public class UserController {
     //変更開始
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token) {
+    	System.out.println("実行されています");
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
         if (verificationToken == null) {
             // トークンが無効な場合の処理
@@ -91,6 +92,7 @@ public class UserController {
         user.setPassword(userRegisterForm.getPassword());
 		user.setEmail(userRegisterForm.getEmail());
 		user.setRole("user");
+		user.setEnabled(false); // サインアップ時は有効化されていない（仮登録状態）
 		//ユーザーを作成
 		userService.registerUser(user);
 	    // プロフィールを作成

@@ -32,14 +32,12 @@ public class SecurityConfig {
                 throw new UsernameNotFoundException("User not found");
          
             }
-            System.out.println(user.getUsername());
-            System.out.println(user.getPassword());
-            System.out.println(user.getRole());
             // Spring SecurityのUserDetailsを使用してユーザーを返す
             return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .roles(user.getRole())
+                .disabled(!user.isEnabled()) // enabledがfalseならdisabledに設定
                 .build();
         };
     }
@@ -55,7 +53,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/login", "/signup").permitAll() // ログイン画面とサインアップ画面は誰でもアクセス可能
+                .requestMatchers("/login", "/signup", "/confirm").permitAll() // ログイン画面とサインアップ画面と本会員登録は誰でもアクセス可能
                 .anyRequest().authenticated() // それ以外のページは認証が必要
             )
             .formLogin((form) -> form
