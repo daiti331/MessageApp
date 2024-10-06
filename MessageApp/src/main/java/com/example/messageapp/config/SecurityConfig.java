@@ -1,3 +1,4 @@
+
 package com.example.messageapp.config;
 
 import org.springframework.context.annotation.Bean;
