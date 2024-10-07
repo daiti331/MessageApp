@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.messageapp.entity.User;
 import com.example.messageapp.entity.VerificationToken;
 import com.example.messageapp.form.UserRegisterForm;
-import com.example.messageapp.repository.UserRepository;
-import com.example.messageapp.repository.VerificationTokenRepository;
 import com.example.messageapp.service.EmailService;
 import com.example.messageapp.service.MessageService;
 import com.example.messageapp.service.ProfileService;
 import com.example.messageapp.service.UserService;
+import com.example.messageapp.service.VerificationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,10 +33,8 @@ public class UserController {
     private final UserService userService; // UserServiceインターフェースを使用
     private final ProfileService profileService;
     private final MessageService messageService;
-    
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final UserRepository userRepository;
     private final EmailService emailService;
+    private final VerificationService verificationService;
     
     // 共通処理：未読メッセージのカウントをモデルに追加
     @ModelAttribute
@@ -54,7 +51,8 @@ public class UserController {
     
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token) {
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+//        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        VerificationToken verificationToken = verificationService.findByToken(token);
         if (verificationToken == null) {
             // トークンが無効な場合の処理
             return "redirect:/signup?error"; // エラー画面にリダイレクト
@@ -65,9 +63,8 @@ public class UserController {
             return "redirect:/signup?error=tokenExpired"; // 期限切れエラーページにリダイレクト
         }
 
-        User user = verificationToken.getUser();
-        user.setEnabled(true); // ユーザーのアカウントを有効化
-        userRepository.save(user); // ユーザー情報を保存
+        // ユーザーアカウントを有効化
+        verificationService.enableUserAccount(verificationToken);
         
         return "redirect:/login"; // 確認後はログインページへリダイレクト
     }
