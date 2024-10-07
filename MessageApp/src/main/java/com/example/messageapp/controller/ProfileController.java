@@ -82,5 +82,37 @@ public class ProfileController {
     	
         return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
     }
+    
+//    //プロフィール編集画面から保存ボタンを押下したときの処理
+//    @PostMapping("/myprofile-edit")
+//    public String editProfile(@ModelAttribute("profileForm") @Valid ProfileRegisterForm profileRegistForm, 
+//            BindingResult bindingResult, 
+//            Principal principal, 
+//            RedirectAttributes redirectAttributes) {
+//    	
+//        if (bindingResult.hasErrors()) {
+//            return "myprofile-edit"; // 入力にエラーがある場合、編集画面に戻る
+//        }
+//        
+//    	// ログイン中のユーザー情報を取得
+//    	String username = principal.getName();
+//        User user = userService.findByUsername(username); // UserServiceを利用してユーザー情報を取得
+//        
+//        // フォームデータをエンティティにマッピング
+//        Profile profile = new Profile();
+//        profile.setUser(user);
+//        profile.setName(profileRegistForm.getName());
+//        profile.setBio(profileRegistForm.getBio());
+//        profile.setAge(profileRegistForm.getAge());
+//        profile.setLocation(profileRegistForm.getLocation());
+//        profile.setGender(profileRegistForm.getGender());
+//        
+//        // プロフィールの更新処理
+//    	profileService.updateProfile(profile);
+//    	
+//    	redirectAttributes.addFlashAttribute("successMessage", "プロフィールが更新されました！");
+//    	
+//        return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
+//    }
 
 }

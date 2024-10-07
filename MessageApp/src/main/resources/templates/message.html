@@ -15,7 +15,10 @@
         
         <div class="card">
             <div class="card-header">
-                <h5>送信者: <span th:text="${message.sender.username}">ユーザー名</span></h5>
+<!--				変更開始-->
+<!--                <h5>送信者: <span th:text="${message.sender.username}">ユーザー名</span></h5>-->
+				<h5>送信者: <span th:text="${message.sender.profile.displayName}">表示名</span></h5>
+<!--				変更終了-->
             </div>
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">送信日時: <span th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</span></h6>

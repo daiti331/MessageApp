@@ -20,6 +20,11 @@ public class Profile {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    
+//    変更開始
+ // 表示名の追加
+    private String displayName;
+//    変更終了
 
     private Integer age;
     private String gender;

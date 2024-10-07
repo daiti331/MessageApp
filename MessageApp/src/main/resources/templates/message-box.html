@@ -33,8 +33,11 @@
 			    <h5>受信箱</h5>
 			    <ul>
 			        <li th:each="message : ${receivedMessages}">
-			            <a th:href="@{/message/received/{id}(id=${message.id})}" th:text="${message.sender.username}">送信者</a>:
-			            <small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+<!--						変更開始-->
+<!--			            <a th:href="@{/message/received/{id}(id=${message.id})}" th:text="${message.sender.username}">送信者</a>:-->
+						<a th:href="@{/message/received/{id}(id=${message.id})}" th:text="${message.sender.profile.displayName}">送信者</a>:
+<!--						変更終了-->
+						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
 			            <!-- 未読メッセージの表示 -->
 			            <span th:if="${!message.readflag}" class="badge badge-warning">新規</span>
 			        </li>
@@ -45,8 +48,11 @@
                 <h5>送信箱</h5>
                 <ul>
                     <li th:each="message : ${sentMessages}">
-                        <a th:href="@{/message/sent/{id}(id=${message.id})}" th:text="${message.recipient.username}">受信者</a>:
-                        <small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
+<!--						変更開始-->
+<!--                        <a th:href="@{/message/sent/{id}(id=${message.id})}" th:text="${message.recipient.username}">受信者</a>:-->
+						<a th:href="@{/message/sent/{id}(id=${message.id})}" th:text="${message.recipient.profile.displayName}">受信者</a>:
+<!--						変更終了-->
+						<small th:text="${@dateFormatter.formatDate(message.timestamp)}">送信日時</small>
                     </li>
                 </ul>
             </div>

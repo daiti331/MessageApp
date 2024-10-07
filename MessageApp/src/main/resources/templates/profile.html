@@ -21,8 +21,17 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">ユーザー名</th>
-                            <td th:text="${profile.user.username}">ユーザー名</td>
+<!--							変更開始-->
+<!--                            <th scope="row">ユーザー名</th>-->
+<!--                            <td th:text="${profile.user.username}">ユーザー名</td>-->
+							<!-- ユーザー名はhiddenで保持 -->
+							<input type="hidden" th:value="${profile.user.username}">
+							<!-- 表示名の追加 -->
+							<tr>
+							    <th scope="row">表示名</th>
+							    <td th:text="${profile.displayName}">表示名</td>
+							</tr>
+<!--							変更終了-->
                         </tr>
                         <tr>
                             <th scope="row">年齢</th>
