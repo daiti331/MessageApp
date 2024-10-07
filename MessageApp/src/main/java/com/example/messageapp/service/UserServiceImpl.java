@@ -3,7 +3,6 @@ package com.example.messageapp.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,9 +47,10 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public List<User> findAllUsersExcept(String username) {
-        return userRepository.findAll().stream()
-            .filter(user -> !user.getUsername().equals(username))
-            .collect(Collectors.toList());
+//        return userRepository.findAllByEnabledTrue().stream()
+//            .filter(user -> !user.getUsername().equals(username))
+//            .collect(Collectors.toList());
+    	return userRepository.findAllByEnabledTrueAndUsernameNot(username);
     }
     
     @Override
