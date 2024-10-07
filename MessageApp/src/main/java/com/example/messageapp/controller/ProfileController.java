@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.messageapp.entity.Profile;
 import com.example.messageapp.entity.User;
+import com.example.messageapp.form.ProfileForm;
 import com.example.messageapp.service.MessageService;
 import com.example.messageapp.service.ProfileService;
 import com.example.messageapp.service.UserService;
@@ -64,55 +65,56 @@ public class ProfileController {
         // プロフィール情報を取得
         Profile profile = profileService.findByUserId(user.getId()); // ProfileServiceを利用してプロフィール情報を取得
 
+        //変更開始
         // プロフィール情報をモデルに追加
-        model.addAttribute("profile", profile);
-        return "myprofile-edit";
-    }
-    
-    //プロフィール編集画面から保存ボタンを押下したときの処理
-    @PostMapping("/myprofile-edit")
-    public String editProfile(@ModelAttribute("profile") Profile profile, Principal principal) {
-    	// ログイン中のユーザー情報を取得
-    	String username = principal.getName();
-        User user = userService.findByUsername(username); // UserServiceを利用してユーザー情報を取得
-        profile.setUser(user); // プロフィールにユーザー情報を設定
+//        model.addAttribute("profile", profile);
         
-        // プロフィールの更新処理
-    	profileService.updateProfile(profile);
-    	
-        return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
+        // フォームオブジェクトを初期化し、プロフィール情報を設定
+        ProfileForm profileForm = new ProfileForm();
+        profileForm.setId(profile.getId()); // プロフィールのIDを設定
+        profileForm.setDisplayName(profile.getDisplayName());
+        profileForm.setAge(profile.getAge());
+        profileForm.setGender(profile.getGender());
+        profileForm.setLocation(profile.getLocation());
+        profileForm.setBio(profile.getBio());
+        
+        model.addAttribute("profileForm", profileForm); // モデルにprofileFormを追加
+        //変更終了
+        return "myprofile-edit";
     }
     
 //    //プロフィール編集画面から保存ボタンを押下したときの処理
 //    @PostMapping("/myprofile-edit")
-//    public String editProfile(@ModelAttribute("profileForm") @Valid ProfileRegisterForm profileRegistForm, 
-//            BindingResult bindingResult, 
-//            Principal principal, 
-//            RedirectAttributes redirectAttributes) {
-//    	
-//        if (bindingResult.hasErrors()) {
-//            return "myprofile-edit"; // 入力にエラーがある場合、編集画面に戻る
-//        }
-//        
+//    public String editProfile(@ModelAttribute("profile") Profile profile, Principal principal) {
 //    	// ログイン中のユーザー情報を取得
 //    	String username = principal.getName();
 //        User user = userService.findByUsername(username); // UserServiceを利用してユーザー情報を取得
-//        
-//        // フォームデータをエンティティにマッピング
-//        Profile profile = new Profile();
-//        profile.setUser(user);
-//        profile.setName(profileRegistForm.getName());
-//        profile.setBio(profileRegistForm.getBio());
-//        profile.setAge(profileRegistForm.getAge());
-//        profile.setLocation(profileRegistForm.getLocation());
-//        profile.setGender(profileRegistForm.getGender());
+//        profile.setUser(user); // プロフィールにユーザー情報を設定
 //        
 //        // プロフィールの更新処理
 //    	profileService.updateProfile(profile);
 //    	
-//    	redirectAttributes.addFlashAttribute("successMessage", "プロフィールが更新されました！");
-//    	
 //        return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
 //    }
+    @PostMapping("/myprofile-edit")
+    public String editProfile(@ModelAttribute("profileForm") ProfileForm profileForm, Principal principal) {
+        // ログイン中のユーザー情報を取得
+        String username = principal.getName();
+        User user = userService.findByUsername(username); // UserServiceを利用してユーザー情報を取得
+        
+        // プロフィールの更新処理
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setId(profileForm.getId());
+        profile.setDisplayName(profileForm.getDisplayName());
+        profile.setAge(profileForm.getAge());
+        profile.setGender(profileForm.getGender());
+        profile.setLocation(profileForm.getLocation());
+        profile.setBio(profileForm.getBio());
+        
+        profileService.updateProfile(profile);
+        
+        return "redirect:/my-profile"; // 更新後はマイプロフィールページにリダイレクト
+    }
 
 }
