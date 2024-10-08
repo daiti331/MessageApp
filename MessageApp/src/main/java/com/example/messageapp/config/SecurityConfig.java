@@ -60,8 +60,8 @@ public class SecurityConfig {
             	.loginProcessingUrl("/login") // ログイン処理のパス
                 .loginPage("/login") // ログインページのURL
 //                .failureUrl("/login?error") // ログイン失敗時の遷移先
-                .usernameParameter("username") // ログインページのユーザーID
-                .passwordParameter("password") // ログインページのパスワード
+                .usernameParameter("username") // ログインページのユーザーID（surpingSecurityのデフォ設定でこれは設定されてるため、本来必要ない）
+                .passwordParameter("password") // ログインページのパスワード（surpingSecurityのデフォ設定でこれは設定されてるため、本来必要ない）
                 .defaultSuccessUrl("/user-list", true) // ログイン成功後にリダイレクトするページ
                 .permitAll()
             )
