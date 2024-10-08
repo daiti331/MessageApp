@@ -22,9 +22,7 @@ public class UserServiceImpl implements UserService {
 	private final BCryptPasswordEncoder passwordEncoder; //パスワードをハッシュ化用
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository; // プロフィールリポジトリをインジェクト
-    //変更開始
     private final VerificationTokenRepository verificationTokenRepository;
-    //変更終了
 
 
 

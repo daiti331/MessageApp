@@ -108,20 +108,14 @@ public class UserController {
     
     //ログイン画面表示
     @GetMapping("/login")
-    //変更開始
-//    public String showLogin() {
-    //変更終了
-//    public String showLogin(Model model) {
     public String showLoginForm(@RequestParam(value = "error", required = false) String error, Model model) {
     	if (error != null) {
             model.addAttribute("errorMessage", "ユーザー名またはパスワードが正しくありません");
         }
-    	//変更開始
     	model.addAttribute("loginForm", new LoginForm());
-    	//変更終了
         return "login";
     }
-  //変更開始
+
     @PostMapping("/login")
     public String processLogin(@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult result) {
         if (result.hasErrors()) {
@@ -130,7 +124,6 @@ public class UserController {
         // 認証処理 (実際のログイン処理はSpring Securityで行われる)
         return "redirect:/user-list"; // 成功した場合、ユーザー一覧へリダイレクト
     }
-  //変更終了
     
     //@AuthenticationPrincipalはログイン中のユーザー情報の詳細を取得できる。Principalはユーザーネームだけ。
     @GetMapping("/user-list")

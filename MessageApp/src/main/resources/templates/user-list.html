@@ -13,10 +13,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-<!--					変更開始-->
-<!--                    <th>ユーザー名</th>-->
 					<th>表示名</th>
-<!--					変更終了-->
                     <th>年齢</th>
                     <th>性別</th>
                     <th>居住地域</th>
@@ -26,10 +23,8 @@
             </thead>
             <tbody>
                 <tr th:each="user : ${users}">
-<!--					変更開始-->
-<!--                    <td th:text="${user.username}">ユーザー名</td>-->
+
 					<td th:text="${user.profile.displayName}">表示名</td>
-<!--					変更終了-->
                     <td th:text="${user.profile.age}">年齢</td>
                     <td th:text="${user.profile.gender}">性別</td>
                     <td th:text="${user.profile.location}">居住地域</td>

@@ -3,7 +3,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
-//変更開始-変更終了
 @Data
 public class LoginForm {
 	

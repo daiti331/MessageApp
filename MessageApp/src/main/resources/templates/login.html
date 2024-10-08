@@ -11,30 +11,20 @@
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card shadow-lg p-4" style="width: 400px;">
             <h2 class="text-center mb-4">ログイン</h2>
-<!--			変更開始-->
-<!--            <form th:action="@{/login}" method="post">-->
 			<form th:action="@{/login}" th:object="${loginForm}" method="post">
-<!--				変更終了-->
                 <div class="form-group">
                     <label for="username">ユーザー名</label>
                     <input type="username" id="username" name="username" class="form-control" placeholder="ユーザー名" required>
-<!--					<input type="text" id="username" th:field="*{username}" class="form-control" placeholder="ユーザー名">-->
-<!--					変更開始-->
 					<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
-<!--					変更終了-->
                 </div>
                 <div class="form-group">
                     <label for="password">パスワード</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="パスワード" required>
-<!--					変更開始-->
 					<div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
-<!--					変更終了-->
                 </div>
-<!--				変更開始-->
 				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
 				        <span th:text="${errorMessage}"></span>
 				</div>
-<!--				変更終了-->
                 <button type="submit" class="btn btn-primary btn-block">ログイン</button>
             </form>
             <div class="text-center mt-3">

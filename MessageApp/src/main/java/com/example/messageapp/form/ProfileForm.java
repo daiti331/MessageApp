@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Size;
 
 import lombok.Data;
 
-//変更開始-変更終了
 @Data
 public class ProfileForm {
 	

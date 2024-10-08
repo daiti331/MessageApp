@@ -16,10 +16,7 @@
             <!-- 送信先のユーザー名を表示 -->
             <div class="form-group">
                 <label for="recipient">送信先:</label>
-<!--				変更開始-->
-<!--                <input type="text" id="recipient" class="form-control" th:value="${recipient.username}" readonly>-->
 				<input type="text" id="recipient" class="form-control" th:value="${recipient.profile.displayName}" readonly>
-<!--				変更終了-->
             </div>
             
             <!-- recipientIdをhiddenフィールドで渡す -->

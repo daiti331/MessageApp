@@ -64,10 +64,6 @@ public class ProfileController {
         
         // プロフィール情報を取得
         Profile profile = profileService.findByUserId(user.getId()); // ProfileServiceを利用してプロフィール情報を取得
-
-        //変更開始
-        // プロフィール情報をモデルに追加
-//        model.addAttribute("profile", profile);
         
         // フォームオブジェクトを初期化し、プロフィール情報を設定
         ProfileForm profileForm = new ProfileForm();
@@ -79,7 +75,7 @@ public class ProfileController {
         profileForm.setBio(profile.getBio());
         
         model.addAttribute("profileForm", profileForm); // モデルにprofileFormを追加
-        //変更終了
+
         return "myprofile-edit";
     }
     
