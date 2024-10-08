@@ -12,7 +12,11 @@
 	<div th:replace="navbar.html"></div>
     <div class="container mt-5">
         <h1>メッセージを送信</h1>
-        <form th:action="@{/message/send}" method="post">
+<!--		変更開始-->
+<!--        <form th:action="@{/message/send}" method="post">-->
+		<form th:action="@{/message/send}" th:object="${messageForm}" method="post">
+<!--			変更終了-->
+
             <!-- 送信先のユーザー名を表示 -->
             <div class="form-group">
                 <label for="recipient">送信先:</label>
@@ -20,13 +24,27 @@
             </div>
             
             <!-- recipientIdをhiddenフィールドで渡す -->
-            <input type="hidden" name="recipientId" th:value="${recipient.id}">
+<!--			変更開始-->
+<!--            <input type="hidden" name="recipientId" th:value="${recipient.id}">-->
+			<input type="hidden" th:field="*{recipientId}">
+<!--			変更終了-->
+
 
             <!-- メッセージ内容 -->
-            <div class="form-group">
-                <label for="content">メッセージ内容:</label>
-                <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
-            </div>
+<!--			変更開始-->
+<!--            <div class="form-group">-->
+<!--                <label for="content">メッセージ内容:</label>-->
+<!--                <textarea id="content" name="content" class="form-control" rows="5" required></textarea>-->
+<!--            </div>-->
+			<div class="form-group">
+			    <label for="content">メッセージ内容:</label>
+			    <textarea id="content" th:field="*{content}" class="form-control" rows="5" required></textarea>
+			    <!-- フォームのバリデーションエラーを表示 -->
+			    <div th:if="${#fields.hasErrors('content')}" class="text-danger">
+			        <p th:errors="*{content}">メッセージ内容を入力してください</p>
+			    </div>
+			</div>
+<!--			変更終了-->
             
             <button type="submit" class="btn btn-primary">送信</button>
         </form>
