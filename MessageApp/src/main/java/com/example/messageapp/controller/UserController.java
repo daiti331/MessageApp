@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.messageapp.entity.Profile;
 import com.example.messageapp.entity.User;
 import com.example.messageapp.entity.VerificationToken;
 import com.example.messageapp.form.LoginForm;
@@ -52,7 +53,6 @@ public class UserController {
     
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token) {
-//        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
         VerificationToken verificationToken = verificationService.findByToken(token);
         if (verificationToken == null) {
             // トークンが無効な場合の処理
@@ -93,8 +93,12 @@ public class UserController {
 		user.setEnabled(false); // サインアップ時は有効化されていない（仮登録状態）
 		//ユーザーを作成
 		userService.registerUser(user);
-	    // プロフィールを作成
-	    profileService.createProfile(user); // ユーザーを引数として渡す
+		
+		// プロフィール作成
+	    Profile profile = new Profile();
+	    profile.setUser(user);
+	    profile.setDisplayName(userRegisterForm.getDisplayName()); // 表示名をセット
+	    profileService.createProfile(profile); // プロフィール保存
 		
 	    // 確認トークンを生成（UUIDなどを利用）
 	    String token = UUID.randomUUID().toString();

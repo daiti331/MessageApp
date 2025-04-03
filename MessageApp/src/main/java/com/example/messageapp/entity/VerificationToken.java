@@ -38,7 +38,7 @@ public class VerificationToken {
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;
-        this.expiryDate = LocalDateTime.now().plusMinutes(1); // 1分の有効期限
+        this.expiryDate = LocalDateTime.now().plusMinutes(60); // 60分の有効期限
     }
     // 有効期限の確認メソッド
     public boolean isExpired() {

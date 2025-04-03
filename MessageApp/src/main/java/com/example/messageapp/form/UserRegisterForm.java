@@ -18,4 +18,7 @@ public class UserRegisterForm {
     @NotEmpty(message = "パスワードは必須です")
     @Size(min = 1, message = "パスワードは1文字以上である必要があります")
     private String password;
+    
+    @NotEmpty(message = "表示名は必須です")
+    private String displayName;
 }
