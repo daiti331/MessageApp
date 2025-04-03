@@ -17,6 +17,7 @@ public class EmailService {
         message.setSubject("メールアドレス確認");
         message.setText("以下のリンクをクリックしてメールアドレスを確認してください:\n"
                 + "http://localhost:8080/confirm?token=" + token);
+        message.setFrom("info@earth-sys.com");
         emailSender.send(message);
     }
 }

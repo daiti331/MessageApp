@@ -1,16 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: local  # デフォルトはローカル環境
+---
 # データベース接続設定
 spring:
+  config:
+    activate:
+       on-profile: local
   datasource:
     url: jdbc:mysql://localhost:3306/message_app
     username: fujioka
     password: kurukuru331
     driver-class-name: com.mysql.cj.jdbc.Driver
-#spring:
-#  datasource:
-#    url: jdbc:mysql://message-app-db.ctg0u2ka4riw.ap-northeast-1.rds.amazonaws.com:3306/message_app
-#    username: fujioka
-#    password: kurukuru331
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+# JPAの設定
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# メールの設定
+  mail:
+    host: smtp.lolipop.jp
+    port: 465
+    username: info@earth-sys.com
+    password: Kurukuru331-
+    properties:
+      '[mail.smtp.auth]': true
+      '[mail.smtp.ssl.enable]': true  # SSL/TLSを有効にする
+      '[mail.smtp.starttls.enable]': true
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://message-app-db.ctg0u2ka4riw.ap-northeast-1.rds.amazonaws.com:3306/message_app
+    username: fujioka
+    password: kurukuru331
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 # JPAの設定
   jpa:
@@ -20,10 +50,11 @@ spring:
 
 # メールの設定
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: shukatu331@gmail.com
-    password: vgzhlbqhqojsbaaz
+    host: smtp.lolipop.jp
+    port: 465
+    username: info@earth-sys.com
+    password: Kurukuru331-
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      '[mail.smtp.auth]': true
+      '[mail.smtp.ssl.enable]': true  # SSL/TLSを有効にする
+      '[mail.smtp.starttls.enable]': true
