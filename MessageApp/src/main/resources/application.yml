@@ -1,15 +1,16 @@
 server:
   port: 8080
 
+# ここでlocalか本番か設定
 spring:
   profiles:
     active: local  # デフォルトはローカル環境
 ---
-# データベース接続設定
 spring:
   config:
     activate:
        on-profile: local
+# データベース接続設定
   datasource:
     url: jdbc:mysql://localhost:3306/message_app
     username: fujioka
@@ -31,11 +32,16 @@ spring:
       '[mail.smtp.auth]': true
       '[mail.smtp.ssl.enable]': true  # SSL/TLSを有効にする
       '[mail.smtp.starttls.enable]': true
+# カスタム環境変数
+custom:
+  base-url: "http://localhost:8080"  # ローカル用URL
 ---
 spring:
   config:
     activate:
       on-profile: prod
+
+# データベース接続設定
   datasource:
     url: jdbc:mysql://message-app-db.ctg0u2ka4riw.ap-northeast-1.rds.amazonaws.com:3306/message_app
     username: fujioka
@@ -58,3 +64,6 @@ spring:
       '[mail.smtp.auth]': true
       '[mail.smtp.ssl.enable]': true  # SSL/TLSを有効にする
       '[mail.smtp.starttls.enable]': true
+# カスタム環境変数
+custom:
+  base-url: "http://earth-sys.com"  # 本番環境用URL
